@@ -20,10 +20,7 @@ namespace WebsocketCollabServer.Helpers
 
         public async void Emit(LogEvent logEvent)
         {
-            if (logEvent.Level >= LogEventLevel.Warning)
-            {
-                await _discord.PostMessage($"{logEvent.RenderMessage()}", _channel);
-            }
+            await _discord.PostMessage($"{logEvent.RenderMessage()}", _channel);
         }
     }
 
