@@ -20,6 +20,7 @@ namespace WebsocketCollabServer.Services
             Wssv.AuthenticationSchemes = AuthenticationSchemes.Basic;
             Wssv.Realm = "Websocket Collab";
             Wssv.UserCredentialsFinder = Verify;
+            Wssv.Log.Level = WebSocketSharp.LogLevel.Trace;
             Wssv.Start();
         }
 
@@ -79,8 +80,11 @@ namespace WebsocketCollabServer.Services
             // save last message timestamp
             rooms[id] = DateTime.UtcNow;
 
+            // debug
+            Serilog.Log.Debug($"New Message in: {id}");
+
             // broadcast raw message to all
-            Send(e.Data);
+            Sessions.Broadcast(e.Data);
         }
     }
 }
