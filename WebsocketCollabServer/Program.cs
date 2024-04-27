@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Serilog;
 using WebsocketCollabServer.Helpers;
 using WebsocketCollabServer.Services;
@@ -30,7 +31,7 @@ namespace WebsocketCollabServer
             // forceful startup otherwise those only start once injected
             var discord = app.Services.GetRequiredService<DiscordBot>();
             app.Services.GetRequiredService<WebSocketServerManager>();
-            var config = app.Configuration.Get<Config>();
+            var config = app.Services.GetService<IOptions<Config>>().Value;
 
             Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
