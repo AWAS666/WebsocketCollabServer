@@ -37,7 +37,7 @@ internal class Program
         var msg = JsonSerializer.Deserialize<Message>(e.Data);
 
         // check if addressed to self
-        if (!msg.To.Contains(self))
+        if (!msg.To.Contains("all") && !msg.To.Contains(self))
             return;
 
         if (msg.Type == "message")
