@@ -28,10 +28,16 @@ namespace WebsocketCollabServer.Services
         {
             // generate room id and make sure it's unique
             string room = GenerateRoomId(8);
+
             while (Rooms.ContainsKey(room))
             {
                 room = GenerateRoomId(8);
             }
+            return CreateRoom(room);
+        }
+
+        public string CreateRoom(string room)
+        {          
             Wssv.AddWebSocketService("/" + room, () => new Chat(Rooms, room));
 
             Rooms.Add(room, DateTime.UtcNow);

@@ -8,7 +8,7 @@ namespace WebsocketCollabServer
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
             var cfgSection = builder.Configuration.GetSection("Secrects");
@@ -22,15 +22,13 @@ namespace WebsocketCollabServer
             using var db = new DataBaseContext();
             db.Database.Migrate();
 
-            // remove all rooms
-            db.Rooms.RemoveRange(db.Rooms.ToList());
-            db.SaveChanges();
+           
 
             app.MapGet("/", () => "Hello World!");
 
             // forceful startup otherwise those only start once injected
             var discord = app.Services.GetRequiredService<DiscordBot>();
-            app.Services.GetRequiredService<WebSocketServerManager>();
+            var websocket = app.Services.GetRequiredService<WebSocketServerManager>();
             var config = app.Services.GetService<IOptions<Config>>().Value;
 
             Log.Logger = new LoggerConfiguration()
@@ -38,6 +36,13 @@ namespace WebsocketCollabServer
             .WriteTo.Console()
             .WriteTo.DiscordSerilogSink(discord, config.LogChannel)
             .CreateLogger();
+
+            // recreate all rooms
+            var rooms = await db.Rooms.ToListAsync();
+            foreach ( var room in rooms )
+            {
+                websocket.CreateRoom(room.Name);
+            }
 
             app.Run();
         }
