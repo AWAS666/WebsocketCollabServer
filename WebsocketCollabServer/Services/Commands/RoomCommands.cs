@@ -23,7 +23,8 @@ namespace WebsocketCollabServer.Services.Commands
             {
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
                 {
-                    Content = $"Already signed up"
+                    Content = $"Already signed up",
+                    IsEphemeral = true
                 });
                 return;
             }
@@ -88,7 +89,8 @@ namespace WebsocketCollabServer.Services.Commands
             {
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
                 {
-                    Content = $"Sign up first"
+                    Content = $"Sign up first",
+                    IsEphemeral = true
                 });
                 return;
             }
@@ -97,7 +99,9 @@ namespace WebsocketCollabServer.Services.Commands
             {
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
                 {
-                    Content = $"Cant create more than 3 rooms"
+                    Content = $"Cant create more than 3 rooms",
+                    IsEphemeral = true
+
                 });
                 return;
             }
@@ -128,7 +132,8 @@ namespace WebsocketCollabServer.Services.Commands
             {
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
                 {
-                    Content = $"Sign up first"
+                    Content = $"Sign up first",
+                    IsEphemeral = true
                 });
                 return;
             }
@@ -138,7 +143,8 @@ namespace WebsocketCollabServer.Services.Commands
             {
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
                 {
-                    Content = $"Room doesnt exist"
+                    Content = $"Room doesnt exist",
+                    IsEphemeral = true
                 });
                 return;
             }
@@ -154,7 +160,8 @@ namespace WebsocketCollabServer.Services.Commands
 
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
             {
-                Content = $"Removed successfully"
+                Content = $"Removed successfully",
+                IsEphemeral = true
             });
         }
 
@@ -170,7 +177,8 @@ namespace WebsocketCollabServer.Services.Commands
             {
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder()
                 {
-                    Content = $"Sign up first"
+                    Content = $"Sign up first",
+                    IsEphemeral = true
                 });
                 return;
             }

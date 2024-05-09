@@ -34,6 +34,7 @@ namespace WebsocketCollabServer.Services
                 ServiceProvider = service
             });
             appCommands.RegisterGlobalCommands<RoomCommands>();
+            appCommands.RegisterGlobalCommands<AdminCommands>();
 
             StartAsync().GetAwaiter().GetResult();
 
