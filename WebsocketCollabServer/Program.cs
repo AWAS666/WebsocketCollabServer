@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using WebsocketCollabServer.Helpers;
 using WebsocketCollabServer.Services;
@@ -16,15 +17,43 @@ namespace WebsocketCollabServer
 
             builder.Services.AddSingleton<DiscordBot>();
             builder.Services.AddSingleton<WebSocketServerManager>();
+
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+            }); ;
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                });
+            });
+
             var app = builder.Build();
 
             // db migration
             using var db = new DataBaseContext();
             db.Database.Migrate();
 
-           
 
             app.MapGet("/", () => "Hello World!");
+            app.MapControllers();
+            app.UseSwagger();
+            app.UseSwaggerUI();
+
 
             // forceful startup otherwise those only start once injected
             var discord = app.Services.GetRequiredService<DiscordBot>();
@@ -39,7 +68,7 @@ namespace WebsocketCollabServer
 
             // recreate all rooms
             var rooms = await db.Rooms.ToListAsync();
-            foreach ( var room in rooms )
+            foreach (var room in rooms)
             {
                 websocket.CreateRoom(room.Name);
             }

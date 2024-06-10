@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using Serilog;
 using System.Security.Principal;
 using WebsocketCollabServer.Helpers;
@@ -37,7 +38,7 @@ namespace WebsocketCollabServer.Services
         }
 
         public string CreateRoom(string room)
-        {          
+        {
             Wssv.AddWebSocketService("/" + room, () => new Chat(Rooms, room));
 
             Rooms.Add(room, DateTime.UtcNow);
@@ -67,6 +68,17 @@ namespace WebsocketCollabServer.Services
             var user = db.Users.FirstOrDefault(x => x.Name == name);
 
             return user == null ? null : new NetworkCredential(user.Name, user.Password);
+        }
+
+        public List<string> GetUsers(string roomId)
+        {
+            List<string> users = new List<string>();
+            string id = $"/{roomId}";
+            foreach (var item in Wssv.WebSocketServices[id].Sessions.IDs)
+            {
+                users.Add(Wssv.WebSocketServices[id].Sessions[item].Context.User.Identity?.Name ?? "Unknown");
+            }
+            return users;
         }
     }
 
